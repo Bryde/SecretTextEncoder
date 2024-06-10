@@ -7,8 +7,10 @@ const input = "Hello";
 console.log("Input:", input);
 
 ## Convert text to commands:
-const encodedText = encodeTextToCmd("foo");
+const encodedText = simpleEncode("foo");
 
 ## Convert commands to text
-const decodedText = decodeCmdToText(encodedText);
+const decodedText = simpleDecode(encodedText);
 
+# Known problems
+The simpleEncode can be quite long. The other option needs a bit of fixing as the direction change messes up the encoding. In short: Replace some of the Mappings with other invisible chars and it should work just fine. I will fix that in time but I have other projects to attent to right now. The simple versions work without problems.
