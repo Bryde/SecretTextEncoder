@@ -1,4 +1,4 @@
-const spaceMapping = {
+const spaceMapping2 = {
   0: '\u200B', // Zero Width Space
   1: '\u200C', // Zero Width Non-Joiner
   2: '\u200D', // Zero Width Joiner
@@ -10,6 +10,17 @@ const spaceMapping = {
   8: '\u202C', // Pop Directional Formatting (for balance)
 };
 
+const spaceMapping = {
+  0: '\u200B', // Zero Width Space
+  1: '\u200C', // Zero Width Non-Joiner
+  2: '\u200D', // Zero Width Joiner
+  3: '\u2060', // Word Joiner
+  4: '\u2062', // Invisible Times
+  5: '\u2063', // Invisible Separator
+  6: '\u2064', // Invisible Plus
+  7: '\uFEFF', // Zero Width No-Break Space
+  8: '\u2061', // Function Application
+};
 const reverseSpaceMapping = Object.fromEntries(Object.entries(spaceMapping).map(([k, v]) => [v, k]));
 
 function stringToBinary(input) {
@@ -114,4 +125,19 @@ function binaryToString(binary) {
     result += String.fromCharCode(parseInt(byte, 2));
   }
   return result;
+}
+
+
+function LoadCompressedEncodedString(fstring) {
+  try{
+  return decodeCmdToText(fstring.substring(fstring.indexOf("'") + 1, fstring.lastIndexOf("'")));
+  }
+  catch(ex){console.log("fstring was not a simpleEncoded text");}
+}
+
+function LoadEncodedString(fstring) {
+  try{
+  return simpleDecode(fstring.substring(fstring.indexOf("'") + 1, fstring.lastIndexOf("'")));
+  }
+  catch(ex){console.log("fstring was not a simpleEncoded text");}
 }
