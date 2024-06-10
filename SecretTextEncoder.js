@@ -78,3 +78,40 @@ function decodeCmdToText(spaces) {
   return output;
 }
 
+
+// New simpleEncode function
+function simpleEncode(text) {
+  const binary = stringToBinary(text);
+  let encodedSpaces = '';
+
+  for (let bit of binary) {
+    encodedSpaces += spaceMapping[bit];
+  }
+
+  return encodedSpaces;
+}
+
+// New simpleDecode function
+function simpleDecode(encodedText) {
+  let binary = '';
+
+  for (let char of encodedText) {
+    binary += reverseSpaceMapping[char];
+  }
+
+  return binaryToString(binary);
+}
+
+// Helper functions
+function stringToBinary(input) {
+  return input.split('').map(char => char.charCodeAt(0).toString(2).padStart(8, '0')).join('');
+}
+
+function binaryToString(binary) {
+  let result = '';
+  for (let i = 0; i < binary.length; i += 8) {
+    let byte = binary.slice(i, i + 8);
+    result += String.fromCharCode(parseInt(byte, 2));
+  }
+  return result;
+}
