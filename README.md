@@ -3,6 +3,7 @@
 
 # Use
 Use complexEncode(string) to encode a string
+
 Use complexDecode(string) to decode a string 
 
 # Example:
