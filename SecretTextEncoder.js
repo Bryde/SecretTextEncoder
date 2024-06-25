@@ -16,46 +16,50 @@
   }
   
   function encodeBinaryToSpaces(binary) {
-    let result = '';
-    let count = 1;
-    let currentChar = binary[0];
-  
-    for (let i = 1; i < binary.length; i++) {
-      if (binary[i] === currentChar) {
-        count++;
-      } else {
-        while (count > 8) {
-          result += spaceMapping[8];
-          count -= 8;
-        }
-        result += spaceMapping[count] || '';
-        currentChar = binary[i];
-        count = 1;
+  let result = '';
+  let count = 1;
+  let currentChar = binary[0];
+
+  for (let i = 1; i < binary.length; i++) {
+    if (binary[i] === currentChar) {
+      count++;
+    } else {
+      // Encode the count using the spaceMapping
+      while (count > 8) { // If count is more than the maximum value in spaceMapping
+        result += spaceMapping[8]; // Append the maximum value
+        count -= 8;
       }
+      result += spaceMapping[count] || ''; // Append the corresponding Unicode character
+      currentChar = binary[i]; // Switch to the next character
+      count = 1; // Reset count
     }
-    while (count > 8) {
-      result += spaceMapping[8];
-      count -= 8;
-    }
-    result += spaceMapping[count] || '';
-  
-    return result;
   }
-  
-  function decodeSpacesToBinary(spaces) {
-    let binary = '';
-    let isZero = true;
-  
-    for (let char of spaces) {
-      let count = reverseSpaceMapping[char];
-      if (count !== undefined) {
-        binary += (isZero ? '0' : '1').repeat(count);
-        isZero = !isZero; // Flip after each group
-      }
-    }
-    return binary;
+  // Handle the last sequence
+  while (count > 8) {
+    result += spaceMapping[8];
+    count -= 8;
   }
+  result += spaceMapping[count] || '';
+
+  return result;
+}
+
   
+ function decodeSpacesToBinary(spaces) {
+  let binary = '';
+  let isZero = true; // Start with zero
+
+  for (let char of spaces) {
+    let count = reverseSpaceMapping[char];
+    if (count !== undefined) {
+      binary += (isZero ? '0' : '1').repeat(count);
+      isZero = !isZero; // Flip to the other bit after each group
+    }
+  }
+  return binary;
+}
+
+
   function binaryToString(binary) {
     let result = '';
     for (let i = 0; i < binary.length; i += 8) {
@@ -102,30 +106,30 @@
   }
   
   // Helper functions
-  function stringToBinary(input) {
-    return input.split('').map(char => char.charCodeAt(0).toString(2).padStart(8, '0')).join('');
-  }
-  
-  function binaryToString(binary) {
-    let result = '';
-    for (let i = 0; i < binary.length; i += 8) {
-      let byte = binary.slice(i, i + 8);
-      result += String.fromCharCode(parseInt(byte, 2));
+  // Helper functions for converting string to binary and vice versa
+function stringToBinary(input) {
+  return input.split('').map(char => char.charCodeAt(0).toString(2).padStart(8, '0')).join('');
+}
+
+function binaryToString(binary) {
+  let result = '';
+  for (let i = 0; i < binary.length; i += 8) {
+    let byte = binary.slice(i, i + 8);
+    result += String.fromCharCode(parseInt(byte, 2));
     }
     return result;
-  }
-  
-  
-  function LoadCompressedEncodedString(fstring) {
-    try{
-    return decodeCmdToText(fstring.substring(fstring.indexOf("'") + 1, fstring.lastIndexOf("'")));
-    }
-    catch(ex){console.log("fstring was not a compressed text");}
-  }
-  
-  function LoadEncodedString(fstring) {
-    try{
-    return simpleDecode(fstring.substring(fstring.indexOf("'") + 1, fstring.lastIndexOf("'")));
-    }
-    catch(ex){console.log("fstring was not a simpleEncoded text");}
-  }
+}
+
+// Complex encoding function
+function complexEncode(text) {
+  const binary = stringToBinary(text);
+  const encodedSpaces = encodeBinaryToSpaces(binary);
+  return encodedSpaces;
+}
+
+// Complex decoding function
+function complexDecode(encodedSpaces) {
+  const decodedBinary = decodeSpacesToBinary(encodedSpaces);
+  const decodedText = binaryToString(decodedBinary);
+  return decodedText;
+}
